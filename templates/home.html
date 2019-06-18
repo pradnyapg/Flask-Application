@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Inventory Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <script type = "text/javascript" 
+         src = "{{ url_for('static', filename = 'inventory.js') }}" ></script>
+</head>
+<body>
+
+<div class="container">
+  <h3>Inventory Managment</h3>
+  
+  <ul class="nav nav-pills">
+    <li class="productTab "><a href="/">Product</a></li>
+    <li class="locationTab"><a  href="/locationDetails" onclick="locationTab()">Location</a></li>
+    <li><a href="/productMovementDetails">Product Movement</a></li>
+  </ul>
+  <div class="container">
+  {% if var == 'product' %}
+	 
+		<nav>
+			  <ul class="nav nav-pills pull-right">
+				<li><a href="#" data-toggle="modal" data-target="#myModal">Add Product</a></li>
+			  </ul>
+		</nav>
+		
+	<!-- Modal AddProduct-->
+	<div class="modal fade" id="myModal" role="dialog">
+		<div class="modal-dialog">
+    
+		  <!-- Modal content-->
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <button type="button" class="close" data-dismiss="modal">&times;</button>
+			  <h4 class="modal-title">Add Product</h4>
+			</div>
+			<div class="modal-body">
+			  <form class="form-horizontal" action="/productActionPage" method="post">
+				<div class="form-group">
+				  <label for="productname">Product Name:</label>
+				  <input type="productname" class="form-control" id="productname" placeholder="Enter Product Name" name="productname">
+				</div>
+				<div class="form-group">
+				  <label for="productquantity">Product Quantity:</label>
+				  <input type="productquantity" class="form-control" id="productquantity" placeholder="Enter Quantity" name="productquantity">
+				</div>
+				<div class="form-group">
+				  <label for="productmrp">Product Mrp:</label>
+				  <input type="productmrp" class="form-control" id="productmrp" placeholder="Enter MRP" name="productmrp">
+				</div>		
+				<div class="modal-footer">
+				  <button type="button" class="btn btn-default" data-dismiss="modal" onclick="saveproduct();">Save</button>
+				</div>
+			</form>
+				
+			</div>
+			
+		  </div>
+		  <!--Modal content-->      
+		</div>
+	</div>
+	<!-- Modal AddProduct-->
+		
+		 <h2>Product Details</h2>
+	  <a class="pull-right" href="/showAddBlog"></a>
+	  <table class="table table-striped">
+		<thead>
+		  <tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Count</th>
+			<th>Mrp</th>
+			<th>Action</th>
+		  </tr>
+		</thead>
+		<tbody>
+		{% for row in rows %} 
+		  <tr>
+			<td>{{row[0]}}</td>
+			<td>{{row[1]}}</td>
+			<td>{{row[2]}}</td>
+			<td>{{row[3]}}</td>
+			<td><a href="#" data-toggle="modal" data-target="#myeditModal{{row[0]}}">Edit </a></td>
+			<td>
+			<!-- Modal EditProduct-->
+	<div class="modal fade" id="myeditModal{{row[0]}}" role="dialog">
+		<div class="modal-dialog">
+    
+		  <!-- Modal content-->
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <button type="button" class="close" data-dismiss="modal">&times;</button>
+			  <h4 class="modal-title">Edit Product</h4>
+			</div>
+			<div class="modal-body">
+			  <form class="form-horizontal" action="/productEditPage" method="POST">
+				<div class="form-group" >
+				  <label for="productname">Product Name:</label>
+				  <input type="hidden" class="form-control" id="productid" name="productid" value="{{row[0]}}" >
+				  <input type="productname" class="form-control" id="productname" placeholder="Enter Product Name" name="updateproductname" value="{{row[1]}}">
+				</div>
+				<div class="form-group">
+				  <label for="productquantity">Product Quantity:</label>
+				  <input type="productquantity" class="form-control" id="productquantity" placeholder="Enter Quantity" name="updateproductquantity" value="{{row[2]}}">
+				</div>
+				<div class="form-group">
+				  <label for="productmrp">Product Mrp:</label>
+				  <input type="productmrp" class="form-control" id="productmrp" placeholder="Enter MRP" name="updateproductmrp" value="{{row[3]}}">
+				</div>		
+				<div class="modal-footer">
+				  <!--<button type="button" class="btn btn-default" data-dismiss="modal">Update</button>-->
+				  <input type="submit" value ="Update" name="update">
+				</div>
+			</form>
+				
+			</div>
+			
+		  </div>
+		  <!--Modal content-->      
+		</div>
+	</div>
+	<!-- Modal EditProduct-->
+	</td>
+		  </tr>
+		{% endfor %}
+		</tbody>
+	  </table>
+	  {% elif var == 'location' %}	  
+	  <nav>
+			<ul class="nav nav-pills pull-right">
+				<li><a href="#" data-toggle="modal" data-target="#myaddlocationModal">Add Location</a></li>
+			</ul>
+		</nav>
+		<h2>Location Details</h2>
+		<!-- Modal AddProduct-->
+	<div class="modal fade" id="myaddlocationModal" role="dialog">
+		<div class="modal-dialog">
+    
+		  <!-- Modal content-->
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <button type="button" class="close" data-dismiss="modal">&times;</button>
+			  <h4 class="modal-title">Add Location</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-vertical-align" action="/productActionPage" method="post">
+					<div class="form-group">
+					  <label for="locationname">Location Name:</label>
+					  <input type="locationname" class="form-control" id="locationname" placeholder="Enter Location Name" name="locationname">
+					</div>
+					<div class="modal-footer">
+					  <button type="button" class="btn btn-default" data-dismiss="modal" onclick="savelocation()">Save</button>
+					</div>
+				</form>				
+			</div>			
+		  </div>
+		  <!--Modal content-->      
+		</div>
+	</div>
+	<!-- Modal AddProduct-->
+	  <table class="table table-striped">
+		<thead>
+		  <tr>
+			<th>ID</th>
+			<th>Location</th>
+			<th>Address</th>
+			<th>Action</th>
+			
+		  </tr>
+		</thead>
+		<tbody>
+		{% for row in result %}
+		  <tr>
+			<td>{{row[0]}}</td>
+			<td>{{row[2]}}</td>
+			<td>{{row[3]}}</td>
+			<td><a href="#" data-toggle="modal" data-target="#myeditlocationModal{{row[0]}}">Edit</a></td>
+			<!-- Modal EditLocation-->
+			<div class="modal fade" id="myeditlocationModal{{row[0]}}" role="dialog">
+				<div class="modal-dialog">
+			
+				  <!-- Modal content-->
+				  <div class="modal-content">
+					<div class="modal-header">
+					  <button type="button" class="close" data-dismiss="modal">&times;</button>
+					  <h4 class="modal-title">Edit Location</h4>
+					</div>
+					<div class="modal-body">
+					  <form class="form-horizontal" method="POST" action="/locationUpdatePage">
+						<div class="form-group">
+						  <label for="locationname">Location Name:</label>
+						  <input type="hidden" class="form-control" id="location_id" name="location_id" value="{{row[0]}}" >
+						  <input type="locationname" class="form-control" id="locationname" placeholder="Enter Location Name" name="locationname" value="{{row[2]}}" disabled>
+						</div>
+						<div class="form-group">
+						  <label for="locationaddress">Location Address:</label>
+						  <input type="locationaddress" class="form-control" id="locationaddress" placeholder="Enter Location Address" name="locationaddress" value="{{row[3]}}">
+						</div>
+						<div class="modal-footer">
+						  <!--<button type="submit" class="btn btn-default" data-dismiss="modal" >Update</button>-->
+						  <input id="submit" name="submit" type="submit" value="Submit">
+						</div>
+					</form>						
+					</div>					
+				  </div>
+				  <!--Modal content-->      
+				</div>
+			</div>
+	<!-- Modal EditLocation-->
+		  </tr>
+		{% endfor %}
+		</tbody>
+	  </table>
+	   {% elif var == 'product_movement' %}	
+	    <nav>
+			<ul class="nav nav-pills pull-right">
+				<li><a href="#" data-toggle="modal" data-target="#myaddproductMovementModal">Add Product Movement</a></li>
+			</ul>
+		</nav>
+		<h2>Product Movement Details</h2>
+		<!-- Modal AddProduct-->
+	<div class="modal fade" id="myaddproductMovementModal" role="dialog">
+		<div class="modal-dialog">    
+		  <!-- Modal content-->
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <button type="button" class="close" data-dismiss="modal">&times;</button>
+			  <h4 class="modal-title">Add Product Movement</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-vertical-align"  method="post">
+					<div class="form-group">
+						<label for="productname">Product Name:</label>
+					  	<select class="form-control" id="select_product" name="productname">
+						{% for product in productresult %}
+							<option value="{{product[0]}}">{{product[1]}}</option>
+						{% endfor %}						
+						</select>
+					</div>
+					<div class="form-group">
+					  <label for="fromlocation">From Location:</label>
+					  <select class="form-control" id="select_fromlocation" name="from_locationname">
+						{% for location in locationresult %}
+							<option value="{{location[0]}}">{{location[2]}}</option>
+						{% endfor %}						
+						</select>
+					</div>
+					<div class="form-group">
+					  <label for="tolocation">To Location:</label>
+					  <select class="form-control" id="select_tolocation" name="to_locationname">
+						{% for location in locationresult %}
+							<option value="{{location[0]}}">{{location[2]}}</option>
+						{% endfor %}						
+						</select>
+					</div>
+					<div class="modal-footer">
+					  <button type="button" class="btn btn-default" data-dismiss="modal" onclick="saveProductMovement()">Save</button>
+					</div>
+				</form>		
+			</div>			
+		  </div>
+		  <!--Modal content-->      
+		</div>
+	</div>
+	<!-- Modal AddProduct-->
+		<table class="table table-striped">
+		<thead>
+		  <tr>
+			<th>ID</th>
+			<th>Product Name</th>
+			<th>From Location</th>
+			<th>To Location</th>
+			<th>TimeStamp</th>
+			<th>Action</th>
+			
+			<!--<th>Action</th>-->
+			
+		  </tr>
+		</thead>
+		<tbody>	
+			{% if res %}
+			{% for row in res %}
+			<tr>
+				<td>{{row[0]}}</td>
+				<td>{{row[4]}}</td>
+				<td>{{row[5]}}</td>
+				<td>{{row[6]}}</td>
+				<td>{{row[8]}}</td>
+				<!--<td><a href="#" data-toggle="modal" data-target="#myeditlocationModal{{row[0]}}">Edit</a></td>-->			
+				<td><a href="#" data-toggle="modal" data-target="#editProductMovement{{row[0]}}">Edit</a></td>	
+				<!-- Modal EditLocation-->
+			<div class="modal fade" id="editProductMovement{{row[0]}}" role="dialog">
+				<div class="modal-dialog">
+			
+				  <!-- Modal content-->
+				  <div class="modal-content">
+					<div class="modal-header">
+					  <button type="button" class="close" data-dismiss="modal">&times;</button>
+					  <h4 class="modal-title">Edit Product Movement</h4>
+					</div>
+					<div class="modal-body">
+					  <form class="form-horizontal" method="POST" action="/updateProductMovement">
+						<div class="form-group">
+						  <label for="locationname">Product Name:</label>
+						  <input type="hidden" class="form-control" id="product_movement_id" name="product_movement_id" value="{{row[0]}}" >
+							<select class="form-control" id="select_product" name="productname">
+							{% for product in allproducts %}
+								<option value="{{product[0]}}" {%  if row[4] == product[1] %} selected="selected" {% endif %}>{{product[1]}}</option>
+							{% endfor %}						
+						</select>
+						</div>
+						<div class="form-group">
+						  <label for="movement_fromlocation">From Location </label>
+							<select class="form-control" id="select_fromlocation" name="from_locationname">
+								{% for location in locationresult %}
+									<option value="{{location[0]}}" {%  if row[5] == location[2] %} selected="selected" {% endif %}>{{location[2]}}</option>
+								{% endfor %}						
+							</select>
+						</div>
+						<div class="form-group">
+						  <label for="movement_tolocation">To Location </label>
+							  <select class="form-control" id="select_tolocation" name="to_locationname">
+								{% for location in locationresult %}
+									<option value="{{location[0]}}" {%  if row[6] == location[2] %} selected="selected" {% endif %}>{{location[2]}}</option>
+								{% endfor %}						
+							</select>
+						</div>
+						<div class="modal-footer">
+						  <!--<button type="submit" class="btn btn-default" data-dismiss="modal" >Update</button>-->
+						  <input id="submit" name="submit" type="submit" value="Submit">
+						</div>
+					</form>						
+					</div>					
+				  </div>
+				  <!--Modal content-->      
+				</div>
+			</div>
+	<!-- Modal EditLocation-->
+					
+			</tr>
+			{% endfor %}
+			{% else %}
+			<tr>
+				<td cols="6" align="center">No product movement</td>
+			</tr>
+			{% endif %}
+		</tbody>
+	  </table>
+	  {% endif %}
+  </div>
+</div>
+
+</body>
+</html>
