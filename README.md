@@ -13,7 +13,7 @@
 ##Product Movement
 - This page defines the process of adding the product movement ,edititng the product and delete function.
 
-###### I am created a simple inventory system with basic functionalities.
+###### I have created a simple inventory system with basic functionalities.
 
 
 
